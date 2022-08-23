@@ -3,6 +3,7 @@ import Footer from './components/Footer';
 import Tasks from './components/Tasks';
 import { useState, useEffect } from 'react';
 import AddTask from './components/AddTask';
+import About from './components/About';
 import {BrowserRouter as Router , Route, Routes} from 'react-router-dom'
 
 function App() {
@@ -97,17 +98,33 @@ const addTask = async (task) => {
   }
 
   return (
+    <Router>
   <div className='container'>
    <Header title={'Task Runner'} onAdd= {() => setShowTask(!showAddTask)}
    showAdd= {showAddTask}/>
 
     {/* // om 'showAddTask' är true då visas komponenten */}
-   {showAddTask && <AddTask onAdd={addTask}/>}
-   {tasks.length>0? (<Tasks tasks={tasks} onDelete={deleteTask} onToggle={toggleReminder }/>)
-   :('No tasks available')}
-
+  
+    <Route path='/'
+     exact 
+     render ={(props)   => {
+      <>
+      {showAddTask && <AddTask onAdd={addTask}/>}
+   {tasks.length>0?
+    (<Tasks tasks={tasks}
+    onDelete={deleteTask} 
+    onToggle={toggleReminder }
+    />)
+   : (
+    'No tasks available'
+    )}
+      </>
+    }}
+    />
+  <Route path='/about' component={About}/>
     <Footer/>
   </div>
+  </Router>
   )
   }
 export default App;
