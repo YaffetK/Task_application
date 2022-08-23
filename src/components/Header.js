@@ -1,7 +1,7 @@
 import React from 'react'
 import Button from './Button'
 
-const Header = ({title}) => {
+const Header = ({ title, onAdd, showAdd}) => {
 
  
   return (
@@ -9,7 +9,8 @@ const Header = ({title}) => {
        
 
     <h1 className='header'>{title}</h1>
-    <Button color={'green'} text='Add'/> 
+    <Button color={showAdd ? 'red' : 'green'} text={showAdd ? 'Close' : 'Add'}
+    onClick={onAdd}/> 
     </header>
   )
 }
