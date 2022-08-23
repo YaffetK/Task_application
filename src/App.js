@@ -1,7 +1,9 @@
 import Header from './components/Header';
+import Footer from './components/Footer';
 import Tasks from './components/Tasks';
 import { useState, useEffect } from 'react';
 import AddTask from './components/AddTask';
+import {BrowserRouter as Router , Route, Routes} from 'react-router-dom'
 
 function App() {
 
@@ -27,6 +29,15 @@ function App() {
 
       return data
     }
+
+    // Fetch Task
+    const fetchTask = async (id) => {
+      const res = await fetch(`http://localhost:5000/tasks/${id}`)
+      const data = await res.json()
+
+      return data
+    }
+
 
     // Add Task
 const addTask = async (task) => {
@@ -62,9 +73,23 @@ const addTask = async (task) => {
       setTasks(tasks.filter(task => task.id !==id))
   }
 
-  const toggleReminder = (id) => {
+    // Toggle Reminder
+  const toggleReminder = async (id) => {
+    const taskToToggle = await fetchTask(id)
+    const updTask = {...taskToToggle, reminder: !taskToToggle.reminder}
+
+    const res = await fetch (`http://localhost:5000/tasks/${id}` ,{
+      method: 'PUT',
+      headers: {
+        'Content-type': 'application/json'
+      },
+      body: JSON.stringify(updTask)
+    })
+
+    const data = await res.json()
+
     setTasks(tasks.map(task => 
-      task.id ===id ? {...task,reminder: !task.reminder} : task)
+      task.id ===id ? {...task,reminder: data.reminder} : task)
                       //...task är detsamma som:
                       //id: task.id, text: task.text, day: task.day, reminder: task.reminder  
     
@@ -81,7 +106,8 @@ const addTask = async (task) => {
    {tasks.length>0? (<Tasks tasks={tasks} onDelete={deleteTask} onToggle={toggleReminder }/>)
    :('No tasks available')}
 
+    <Footer/>
   </div>
-  );
+  )
   }
 export default App;
